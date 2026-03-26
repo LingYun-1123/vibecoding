@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Playfair Display", serif;
+  --font-sans: "Noto Sans SC", "Inter", sans-serif;
+  --color-planner-bg: #F8F6F1;
+  --color-planner-ink: #1A1A1A;
+  --color-planner-accent: #C8543A;
+  --color-planner-secondary: #9B9B9B;
+  --color-planner-border: #DEDBD5;
+}
+
+@layer base {
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Noto+Sans+SC:wght@100..900&display=swap');
+
+  body {
+    @apply bg-planner-bg text-planner-ink font-sans antialiased;
+  }
+}
+
+@layer utilities {
+  .hairline-border {
+    border: 1px solid var(--color-planner-border);
+  }
+  .red-divider {
+    border-right: 1px solid var(--color-planner-accent);
+  }
+}
+
+/* Custom scrollbar for a cleaner look */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-planner-border);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-planner-secondary);
+}
