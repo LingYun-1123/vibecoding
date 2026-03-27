@@ -11,9 +11,10 @@ import {
   Circle,
   Triangle,
   ArrowLeft,
-  X
+  X,
+  GripVertical
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, Reorder } from 'motion/react';
 import { DailyPlan, TimeBlock, TodoItem, AppState, ViewMode } from './types';
 import { cn } from './lib/utils';
 
@@ -330,9 +331,30 @@ export default function App() {
             </div>
           </div>
 
-          <div className="divide-y hairline-border border-b">
+          <Reorder.Group 
+            axis="y" 
+            values={currentPlan.plannedBlocks} 
+            onReorder={(newPlanned) => {
+              // We need to reorder both planned and actual blocks together to keep them synced
+              const newActual = newPlanned.map(pBlock => {
+                const originalIdx = currentPlan.plannedBlocks.findIndex(pb => pb.id === pBlock.id);
+                return currentPlan.actualBlocks[originalIdx];
+              });
+              updatePlan({ plannedBlocks: newPlanned, actualBlocks: newActual });
+            }}
+            className="divide-y hairline-border border-b"
+          >
             {currentPlan.plannedBlocks.map((block, idx) => (
-              <div key={block.id} className="grid grid-cols-2 group hover:bg-planner-bg/50 transition-colors relative">
+              <Reorder.Item 
+                key={block.id} 
+                value={block}
+                className="grid grid-cols-2 group hover:bg-planner-bg/50 transition-colors relative bg-white"
+              >
+                {/* Drag Handle - Floating Left */}
+                <div className="absolute left-[-30px] top-0 bottom-0 flex items-center cursor-grab active:cursor-grabbing text-planner-border hover:text-planner-accent transition-colors">
+                  <GripVertical size={16} />
+                </div>
+
                 {/* Planned Column */}
                 <div className={cn(
                   "flex items-center gap-2 p-2 border-r red-divider relative",
@@ -388,9 +410,9 @@ export default function App() {
                     <X size={12} />
                   </button>
                 </div>
-              </div>
+              </Reorder.Item>
             ))}
-          </div>
+          </Reorder.Group>
         </section>
 
         {/* Reflection Section */}
